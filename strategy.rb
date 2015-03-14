@@ -9,7 +9,7 @@ end
 class ItFlys
 	include Flys
 
-	def flys()
+	def flies?()
 		true
 	end
 
@@ -18,7 +18,7 @@ end
 class CantFly
 	include Flys
 
-	def flys()
+	def flies?()
 		false
 	end
 
@@ -28,24 +28,20 @@ class Animal
 	attr_reader :flying_ability
 
 	def initialize(flying_abillity)
-		self.set_flying_abillity(flying_abillity)
+		self.flying_abillity = flying_abillity
 	end
 
-	def set_flying_abillity(flying_abillity)
+	def flying_abillity=(flying_abillity)
 		@flying_abillity = flying_abillity
 	end
 
 	def can_fly?
-		@flying_abillity.flys
+		@flying_abillity.flies?
 	end
 
 end
 
 class Dog < Animal
-
-	def initialize(flying_abillity)
-		super(flying_abillity)
-	end
 
 end
 
@@ -55,4 +51,5 @@ end
 
 bird = Bird.new(ItFlys.new)
 dog = Dog.new(CantFly.new)
+puts bird.can_fly?
 puts dog.can_fly?
