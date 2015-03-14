@@ -38,28 +38,46 @@ class Shop
 
 	include Subject
 
-	attr_accessor :baconPrice, :eggPrice, :milkPrice
-
-	def initialize(baconPrice, eggPrice, milkPrice)
+	def initialize(bacon_price, egg_price, milk_price)
 		@observers = []
-		self.baconPrice = baconPrice
-		self.eggPrice = eggPrice
-		self.milkPrice = milkPrice
+		@bacon_price = bacon_price
+		@egg_price = egg_price
+		@milk_price = milk_price
 	end
 
 	def register(observer)
 		@observers.push(observer)
+		self.notify
 	end
 
 	def unregister(observer)
-		puts @observers.delete_at(@observers.find_index(observer))
+		@observers.delete_at(@observers.find_index(observer))
 	end
 
 	def notify()
 		 @observers.each do |observer|
-			observer.update(@baconPrice, @eggPrice, @milkPrice)
+			observer.update(@bacon_price, @egg_price, @milkprice)
 		end
 	end
+
+	def bacon_price=(new_price)
+		@bacon_price = new_price
+		self.notify
+	end
+
+	def milk_price=(new_price)
+		@milk_price = new_price
+		self.notify
+	end
+
+	def egg_price=(new_price)
+		@egg_price = new_price
+		self.notify
+	end
+
+	private
+
+		attr_accessor :baconPrice, :eggPrice, :milkPrice
 
 end
 
@@ -67,13 +85,18 @@ class Customer
 
 	include Observer
 
-	attr_accessor :baconPrice, :eggPrice, :milkPrice
+	attr_reader :bacon_price, :egg_price, :milk_price
 
-	def update(baconPrice, eggPrice, milkPrice)
-		self.baconPrice = baconPrice
-		self.eggPrice = eggPrice
-		self.milkPrice = milkPrice
+	def update(bacon_price, egg_price, milk_price)
+		@bacon_price = bacon_price
+		@egg_price = egg_price
+		@milk_price = milk_price
 	end
+
+	private
+		
+	attr_writer :bacon_price, :egg_price, :milk_price
+
 end
 
 
@@ -85,18 +108,13 @@ ann = Customer.new
 shop.register(mark)
 shop.register(john)
 shop.register(ann)
-shop.notify
-puts "mark recevied a message that bacon costed: #{mark.baconPrice} "
 
-shop.baconPrice = 5
-shop.notify
-
-puts "bacon went up in price and john receved a message of the new price: #{john.baconPrice}"
-
+puts "On register Mark recevied a message that bacon costed: #{mark.bacon_price} "
+shop.bacon_price = 5
+puts "bacon went up in price and john receved a message of the new price: #{john.bacon_price}"
+puts 'Ann stopped asking the store for updates on her three fave items'
 shop.unregister(ann)
-shop.baconPrice = 4
-shop.notify
-
-puts "Ann stopped observing the shop and know the last price as: #{ann.baconPrice}"
-puts "John who is stil monitoring the price of bacon saw the price drop to: #{john.baconPrice}"
-
+puts 'bacon price changes to 4'
+shop.bacon_price = 4
+puts "Ann stopped observing the shop and knows the last price as: #{ann.bacon_price}"
+puts "John who is stil monitoring the price of bacon saw the price drop to: #{john.bacon_price}"
